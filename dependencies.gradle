@@ -1,0 +1,136 @@
+ext {
+
+    /*====================================== MAIN ======================================*/
+
+    android = [
+            compileSdkVersion: 28,
+            minSdkVersion    : 16,
+            targetSdkVersion : 28,
+            buildToolsVersion: "28.0.3",
+    ]
+
+    libsGroup = "com.github.illiashenkoo.startask"
+    libsVersion = "0.0.1"
+
+    /*================================= BUILD PLUGINS ==================================*/
+
+    buildVersions = [
+            gradle   : '3.3.2',
+            kotlin   : "1.3.21",
+            dcendents: "2.1",
+    ]
+
+    buildPlugins = [
+            gradle   : "com.android.tools.build:gradle:$buildVersions.gradle",
+            kotlin   : "org.jetbrains.kotlin:kotlin-gradle-plugin:$buildVersions.kotlin",
+            dcendents: "com.github.dcendents:android-maven-gradle-plugin:$buildVersions.dcendents",
+    ]
+
+    /*================================== DEPENDENCIES ==================================*/
+
+    def android_support_runner_version = '1.0.2'
+    def android_support_espresso_core_version = '3.0.2'
+    def junit_version = '4.12'
+    def mockito_version = '2.7.22'
+    def android_x_appcompat = '1.0.2'
+    def android_x_runner = '1.1.2-alpha02'
+    def android_x_espresso_core = '3.2.0-alpha02'
+
+    def libs = [
+            /* kotlin */
+            kotlinStdlib      : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$buildVersions.kotlin",
+
+            androidxAppcompat : "androidx.appcompat:appcompat:$android_x_appcompat",
+
+            androidxAnnotation: "androidx.annotation:annotation:$android_x_appcompat"
+    ]
+
+    def testLibs = [
+            jnuit                     : "junit:junit:$junit_version",
+            androidSupportRunner      : "com.android.support.test:runner:$android_support_runner_version",
+            androidSupportEspressoCore: "com.android.support.test.espresso:espresso-core:$android_support_espresso_core_version",
+            mockito                   : "org.mockito:mockito-core:$mockito_version",
+            androidxRunner            : "androidx.test:runner:$android_x_runner",
+            androidxEspressoCore      : "androidx.test.espresso:espresso-core:$android_x_espresso_core",
+    ]
+
+    /*============================== MODULE DEPENDENCIES  ==============================*/
+
+    def modules = [
+            ktx_core: ":startask-ktx-core",
+            utils   : ":startask-utils",
+    ]
+
+    libraryModuleDependencies = [
+            /* android support */
+            [configuration: "implementation", dependency: libs.supportDesign],
+
+            /* kotlin */
+            [configuration: "api", dependency: libs.kotlinStdlib],
+
+            /* test */
+            [configuration: "testImplementation", dependency: testLibs.jnuit],
+            [configuration: "testImplementation", dependency: testLibs.mockito],
+    ]
+
+    sampleModuleDependencies = [
+            [configuration: "implementation", dependency: libs.androidxAppcompat],
+
+            /* kotlin */
+            [configuration: "implementation", dependency: libs.kotlinStdlib],
+
+            /* modules */
+            [configuration: "implementation", dependency: project(modules.ktx_core)],
+            [configuration: "implementation", dependency: project(modules.utils)],
+
+            /* test */
+//            [configuration: "testImplementation", dependency: testLibs.jnuit],
+            [configuration: "testImplementation", dependency: testLibs.mockito],
+    ]
+
+    ktxCoreModuleDependencies = [
+            [configuration: "implementation", dependency: libs.androidxAnnotation],
+
+            /* tests */
+            [configuration: "testImplementation", dependency: testLibs.jnuit],
+            [configuration: "androidTestImplementation", dependency: testLibs.androidxRunner],
+            [configuration: "androidTestImplementation", dependency: testLibs.androidxEspressoCore],
+    ]
+
+    utilsModuleDependencies = [
+            [configuration: "implementation", dependency: libs.androidxAnnotation],
+
+            /* tests */
+            [configuration: "testImplementation", dependency: testLibs.jnuit],
+            [configuration: "androidTestImplementation", dependency: testLibs.androidxRunner],
+            [configuration: "androidTestImplementation", dependency: testLibs.androidxEspressoCore],
+    ]
+
+    /*==================================== PLUGINS =====================================*/
+
+    def plugins = [
+            android_library          : 'com.android.library',
+            android_application      : 'com.android.application',
+            kotlin_android           : 'kotlin-android',
+            kotlin_android_extensions: 'kotlin-android-extensions',
+            kotlin_kapt              : 'kotlin-kapt',
+            android_maven            : 'com.github.dcendents.android-maven',
+    ]
+
+    sampleModulePlugins = [
+            plugins.android_application,
+            plugins.kotlin_android,
+    ]
+
+    ktxCoreModulePlugins = [
+            plugins.android_library,
+            plugins.kotlin_android,
+            plugins.android_maven
+    ]
+
+    utilsModulePlugins = [
+            plugins.android_library,
+            plugins.kotlin_android,
+            plugins.android_maven
+    ]
+}
