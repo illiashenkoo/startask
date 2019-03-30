@@ -1,0 +1,4 @@
+include ':sample', ':startask-ktx-core', ':startask-utils'
+
+project(':startask-ktx-core').projectDir = new File(settingsDir, './libraries/startask-ktx-core')
+project(':startask-utils').projectDir = new File(settingsDir, './libraries/startask-utils')
