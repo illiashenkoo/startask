@@ -10,7 +10,7 @@ ext {
     ]
 
     libsGroup = "com.github.illiashenkoo.startask"
-    libsVersion = "0.1.0"
+    libsVersion = "0.1.1"
 
     /*================================= BUILD PLUGINS ==================================*/
 
@@ -57,8 +57,9 @@ ext {
     /*============================== MODULE DEPENDENCIES  ==============================*/
 
     def modules = [
-            ktx_core: ":startask-ktx-core",
-            utils   : ":startask-utils",
+            ktx_core : ":startask-ktx-core",
+            utils    : ":startask-utils",
+            lifecycle: ":startask-lifecycle",
     ]
 
     libraryModuleDependencies = [
@@ -82,6 +83,7 @@ ext {
             /* modules */
             [configuration: "implementation", dependency: project(modules.ktx_core)],
             [configuration: "implementation", dependency: project(modules.utils)],
+            [configuration: "implementation", dependency: project(modules.lifecycle)],
 
             /* test */
 //            [configuration: "testImplementation", dependency: testLibs.jnuit],
@@ -99,6 +101,18 @@ ext {
 
     utilsModuleDependencies = [
             [configuration: "implementation", dependency: libs.androidxAnnotation],
+
+            /* tests */
+            [configuration: "testImplementation", dependency: testLibs.jnuit],
+            [configuration: "androidTestImplementation", dependency: testLibs.androidxRunner],
+            [configuration: "androidTestImplementation", dependency: testLibs.androidxEspressoCore],
+    ]
+
+    lifecycleModuleDependencies = [
+            [configuration: "implementation", dependency: libs.androidxAnnotation],
+
+            /* kotlin */
+            [configuration: "implementation", dependency: libs.kotlinStdlib],
 
             /* tests */
             [configuration: "testImplementation", dependency: testLibs.jnuit],
@@ -129,6 +143,12 @@ ext {
     ]
 
     utilsModulePlugins = [
+            plugins.android_library,
+            plugins.kotlin_android,
+            plugins.android_maven
+    ]
+
+    lifecycleModulePlugins = [
             plugins.android_library,
             plugins.kotlin_android,
             plugins.android_maven
