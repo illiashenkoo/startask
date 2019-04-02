@@ -1,13 +1,13 @@
 package net.codecision.startask.lifecycle.data
 
-inline fun <T> DataWrapper<T>.onLoading(action: () -> Unit): DataWrapper<T> {
+inline fun <D, E> DataWrapper<D, E>.onLoading(action: () -> Unit): DataWrapper<D, E> {
     if (state == DataState.LOADING) {
         action()
     }
     return this
 }
 
-inline fun <T> DataWrapper<T>.onFailure(action: (error: DataError) -> Unit): DataWrapper<T> {
+inline fun <D, E> DataWrapper<D, E>.onFailure(action: (error: E) -> Unit): DataWrapper<D, E> {
     if (state == DataState.FAILURE) {
         if (error != null) {
             action(error)
@@ -18,7 +18,7 @@ inline fun <T> DataWrapper<T>.onFailure(action: (error: DataError) -> Unit): Dat
     return this
 }
 
-inline fun <T> DataWrapper<T>.onFailureNullable(action: (error: DataError?) -> Unit): DataWrapper<T> {
+inline fun <D, E> DataWrapper<D, E>.onFailureNullable(action: (error: E?) -> Unit): DataWrapper<D, E> {
     if (state == DataState.FAILURE) {
         action(error)
     }
@@ -27,7 +27,7 @@ inline fun <T> DataWrapper<T>.onFailureNullable(action: (error: DataError?) -> U
 
 
 @Suppress("UNCHECKED_CAST")
-inline fun <T> DataWrapper<T>.onSuccess(action: (value: T) -> Unit): DataWrapper<T> {
+inline fun <D, E> DataWrapper<D, E>.onSuccess(action: (value: D) -> Unit): DataWrapper<D, E> {
     if (state == DataState.SUCCESS) {
         if (data != null) {
             action(data)
@@ -39,7 +39,7 @@ inline fun <T> DataWrapper<T>.onSuccess(action: (value: T) -> Unit): DataWrapper
 }
 
 @Suppress("UNCHECKED_CAST")
-inline fun <T> DataWrapper<T>.onSuccessNullable(action: (value: T?) -> Unit): DataWrapper<T> {
+inline fun <D, E> DataWrapper<D, E>.onSuccessNullable(action: (value: D?) -> Unit): DataWrapper<D, E> {
     if (state == DataState.SUCCESS) {
         action(data)
     }
@@ -47,12 +47,12 @@ inline fun <T> DataWrapper<T>.onSuccessNullable(action: (value: T?) -> Unit): Da
 }
 
 @Suppress("UNCHECKED_CAST")
-inline fun <T> DataWrapper<T>.onSuccess(defError: DataError, action: (value: T) -> Unit): DataWrapper<T> {
+inline fun <D, E> DataWrapper<D, E>.onSuccess(defError: E, action: (value: D) -> Unit): DataWrapper<D, E> {
     if (state == DataState.SUCCESS) {
         if (data != null) {
             action(data)
         } else {
-            DataWrapper.failure<T>(defError)
+            DataWrapper.failure<D, E>(defError)
         }
     }
     return this
