@@ -35,7 +35,7 @@ ext {
     def android_x_appcompat = '1.0.2'
     def android_x_runner = '1.1.2-alpha02'
     def android_x_espresso_core = '3.2.0-alpha02'
-    def android_x_recyclerview = '1.1.0-alpha04'
+    def android_x_recycler_view = '1.1.0-alpha04'
 
     def libs = [
             /* kotlin */
@@ -44,7 +44,7 @@ ext {
             androidxAppcompat   : "androidx.appcompat:appcompat:$android_x_appcompat",
 
             androidxAnnotation  : "androidx.annotation:annotation:$android_x_appcompat",
-            androidxRecyclerView: "androidx.recyclerview:recyclerview:$android_x_recyclerview",
+            androidxRecyclerView: "androidx.recyclerview:recyclerview:$android_x_recycler_view",
 
     ]
 
