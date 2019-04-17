@@ -10,7 +10,7 @@ ext {
     ]
 
     libsGroup = "com.github.illiashenkoo.startask"
-    libsVersion = "0.1.0"
+    libsVersion = "0.1.1"
 
     /*================================= BUILD PLUGINS ==================================*/
 
@@ -35,14 +35,17 @@ ext {
     def android_x_appcompat = '1.0.2'
     def android_x_runner = '1.1.2-alpha02'
     def android_x_espresso_core = '3.2.0-alpha02'
+    def android_x_recycler_view = '1.1.0-alpha04'
 
     def libs = [
             /* kotlin */
-            kotlinStdlib      : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$buildVersions.kotlin",
+            kotlinStdlib        : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$buildVersions.kotlin",
 
-            androidxAppcompat : "androidx.appcompat:appcompat:$android_x_appcompat",
+            androidxAppcompat   : "androidx.appcompat:appcompat:$android_x_appcompat",
 
-            androidxAnnotation: "androidx.annotation:annotation:$android_x_appcompat"
+            androidxAnnotation  : "androidx.annotation:annotation:$android_x_appcompat",
+            androidxRecyclerView: "androidx.recyclerview:recyclerview:$android_x_recycler_view",
+
     ]
 
     def testLibs = [
@@ -57,8 +60,10 @@ ext {
     /*============================== MODULE DEPENDENCIES  ==============================*/
 
     def modules = [
-            ktx_core: ":startask-ktx-core",
-            utils   : ":startask-utils",
+            ktx_core : ":startask-ktx-core",
+            utils    : ":startask-utils",
+            lifecycle: ":startask-lifecycle",
+            adapter  : ":startask-lifecycle",
     ]
 
     libraryModuleDependencies = [
@@ -82,6 +87,8 @@ ext {
             /* modules */
             [configuration: "implementation", dependency: project(modules.ktx_core)],
             [configuration: "implementation", dependency: project(modules.utils)],
+            [configuration: "implementation", dependency: project(modules.lifecycle)],
+            [configuration: "implementation", dependency: project(modules.adapter)],
 
             /* test */
 //            [configuration: "testImplementation", dependency: testLibs.jnuit],
@@ -99,6 +106,32 @@ ext {
 
     utilsModuleDependencies = [
             [configuration: "implementation", dependency: libs.androidxAnnotation],
+
+            /* tests */
+            [configuration: "testImplementation", dependency: testLibs.jnuit],
+            [configuration: "androidTestImplementation", dependency: testLibs.androidxRunner],
+            [configuration: "androidTestImplementation", dependency: testLibs.androidxEspressoCore],
+    ]
+
+    adapterModuleDependencies = [
+            /* AndroidX */
+            [configuration: "implementation", dependency: libs.androidxAnnotation],
+            [configuration: "implementation", dependency: libs.androidxRecyclerView],
+
+            /* kotlin */
+            [configuration: "implementation", dependency: libs.kotlinStdlib],
+
+            /* tests */
+            [configuration: "testImplementation", dependency: testLibs.jnuit],
+            [configuration: "androidTestImplementation", dependency: testLibs.androidxRunner],
+            [configuration: "androidTestImplementation", dependency: testLibs.androidxEspressoCore],
+    ]
+
+    lifecycleModuleDependencies = [
+            [configuration: "implementation", dependency: libs.androidxAnnotation],
+
+            /* kotlin */
+            [configuration: "implementation", dependency: libs.kotlinStdlib],
 
             /* tests */
             [configuration: "testImplementation", dependency: testLibs.jnuit],
@@ -129,6 +162,18 @@ ext {
     ]
 
     utilsModulePlugins = [
+            plugins.android_library,
+            plugins.kotlin_android,
+            plugins.android_maven
+    ]
+
+    adapterModulePlugins = [
+            plugins.android_library,
+            plugins.kotlin_android,
+            plugins.android_maven
+    ]
+
+    lifecycleModulePlugins = [
             plugins.android_library,
             plugins.kotlin_android,
             plugins.android_maven
