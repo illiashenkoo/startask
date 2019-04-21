@@ -32,10 +32,12 @@ ext {
     def android_support_espresso_core_version = '3.0.2'
     def junit_version = '4.12'
     def mockito_version = '2.7.22'
+    def robolectricVersion = '4.2.1'
     def android_x_appcompat = '1.0.2'
     def android_x_runner = '1.1.2-alpha02'
     def android_x_espresso_core = '3.2.0-alpha02'
     def android_x_recycler_view = '1.1.0-alpha04'
+    def android_x_fragment = '1.0.0'
 
     def libs = [
             /* kotlin */
@@ -45,6 +47,7 @@ ext {
 
             androidxAnnotation  : "androidx.annotation:annotation:$android_x_appcompat",
             androidxRecyclerView: "androidx.recyclerview:recyclerview:$android_x_recycler_view",
+            androidxFragment    : "androidx.fragment:fragment:$android_x_fragment",
 
     ]
 
@@ -53,6 +56,7 @@ ext {
             androidSupportRunner      : "com.android.support.test:runner:$android_support_runner_version",
             androidSupportEspressoCore: "com.android.support.test.espresso:espresso-core:$android_support_espresso_core_version",
             mockito                   : "org.mockito:mockito-core:$mockito_version",
+            robolectric               : "org.robolectric:robolectric:$robolectricVersion",
             androidxRunner            : "androidx.test:runner:$android_x_runner",
             androidxEspressoCore      : "androidx.test.espresso:espresso-core:$android_x_espresso_core",
     ]
@@ -60,10 +64,11 @@ ext {
     /*============================== MODULE DEPENDENCIES  ==============================*/
 
     def modules = [
-            ktx_core : ":startask-ktx-core",
-            utils    : ":startask-utils",
-            lifecycle: ":startask-lifecycle",
-            adapter  : ":startask-lifecycle",
+            ktx_core   : ":startask-ktx-core",
+            utils      : ":startask-utils",
+            lifecycle  : ":startask-lifecycle",
+            adapter    : ":startask-adapter",
+            permissions: ":startask-permissions",
     ]
 
     libraryModuleDependencies = [
@@ -89,6 +94,7 @@ ext {
             [configuration: "implementation", dependency: project(modules.utils)],
             [configuration: "implementation", dependency: project(modules.lifecycle)],
             [configuration: "implementation", dependency: project(modules.adapter)],
+            [configuration: "implementation", dependency: project(modules.permissions)],
 
             /* test */
 //            [configuration: "testImplementation", dependency: testLibs.jnuit],
@@ -139,6 +145,20 @@ ext {
             [configuration: "androidTestImplementation", dependency: testLibs.androidxEspressoCore],
     ]
 
+    permissionsModuleDependencies = [
+            [configuration: "implementation", dependency: libs.androidxAnnotation],
+            [configuration: "implementation", dependency: libs.androidxAppcompat],
+            [configuration: "implementation", dependency: libs.androidxFragment],
+
+            /* kotlin */
+            [configuration: "implementation", dependency: libs.kotlinStdlib],
+
+            /* tests */
+            [configuration: "testImplementation", dependency: testLibs.jnuit],
+            [configuration: "testImplementation", dependency: testLibs.mockito],
+            [configuration: "testImplementation", dependency: testLibs.robolectric],
+    ]
+
     /*==================================== PLUGINS =====================================*/
 
     def plugins = [
@@ -153,6 +173,8 @@ ext {
     sampleModulePlugins = [
             plugins.android_application,
             plugins.kotlin_android,
+            plugins.kotlin_android_extensions,
+            plugins.kotlin_kapt,
     ]
 
     ktxCoreModulePlugins = [
@@ -174,6 +196,12 @@ ext {
     ]
 
     lifecycleModulePlugins = [
+            plugins.android_library,
+            plugins.kotlin_android,
+            plugins.android_maven
+    ]
+
+    permissionsModulePlugins = [
             plugins.android_library,
             plugins.kotlin_android,
             plugins.android_maven

@@ -1,4 +1,4 @@
-package net.codecision.startask.startask_ktx_core;
+package net.codecision.startask.permissions;
 
 import org.junit.Test;
 

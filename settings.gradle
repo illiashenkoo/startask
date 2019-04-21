@@ -1,6 +1,7 @@
-include ':sample', ':startask-ktx-core', ':startask-utils', ':startask-lifecycle', ':startask-adapter'
+include ':sample', ':startask-ktx-core', ':startask-utils', ':startask-lifecycle', ':startask-adapter', 'startask-permissions'
 
 project(':startask-ktx-core').projectDir = new File(settingsDir, './libraries/startask-ktx-core')
 project(':startask-utils').projectDir = new File(settingsDir, './libraries/startask-utils')
 project(':startask-lifecycle').projectDir = new File(settingsDir, './libraries/startask-lifecycle')
 project(':startask-adapter').projectDir = new File(settingsDir, './libraries/startask-adapter')
+project(':startask-permissions').projectDir = new File(settingsDir, './libraries/startask-permissions')
