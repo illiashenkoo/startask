@@ -11,8 +11,10 @@ import net.codecision.startask.permissions.Permission
 
 class PermissionsActivity : AppCompatActivity() {
 
-    private val locationPermission: Permission by lazy {
-        Permission(true, Manifest.permission.CAMERA)
+    private val cameraPermission: Permission by lazy {
+        Permission.Builder(Manifest.permission.CAMERA)
+                .setRequestCode(MY_PERMISSIONS_REQUEST_CODE)
+                .build()
     }
 
     @SuppressLint("SetTextI18n")
@@ -34,7 +36,7 @@ class PermissionsActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun checkLocationPermission() {
-        locationPermission.check(this)
+        cameraPermission.check(this)
                 .onGranted {
                     statusView.text = "Granted!"
                 }.onShowRationale {
@@ -44,7 +46,7 @@ class PermissionsActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun onRequestLocationPermissionResult(requestCode: Int, grantResults: IntArray) {
-        locationPermission.onRequestPermissionsResult(this, requestCode, grantResults)
+        cameraPermission.onRequestPermissionsResult(this, requestCode, grantResults)
                 .onGranted {
                     statusView.text = "Granted!"
                 }.onDenied {
@@ -59,13 +61,17 @@ class PermissionsActivity : AppCompatActivity() {
                 .setTitle("Camera permission")
                 .setMessage("Allow app to use your camera to take photos and record videos.")
                 .setPositiveButton("Allow") { _, _ ->
-                    locationPermission.request(this)
+                    cameraPermission.request(this)
                 }
                 .setNegativeButton("Deny") { _, _ ->
 
                 }
                 .create()
                 .show()
+    }
+
+    companion object {
+        const val MY_PERMISSIONS_REQUEST_CODE = 99
     }
 
 }

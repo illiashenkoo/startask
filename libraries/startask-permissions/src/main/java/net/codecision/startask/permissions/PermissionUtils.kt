@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import net.codecision.startask.permissions.model.PermissionCheckResult
 import net.codecision.startask.permissions.model.PermissionRequestResult
 
-
 class PermissionUtils {
 
     companion object {
@@ -20,17 +19,13 @@ class PermissionUtils {
                 activity: Activity,
                 permissions: Array<out String>,
                 requestCode: Int,
-                shouldShowRationale: Boolean
+                shouldShowRationale: Boolean,
+                shouldRequestAutomatically: Boolean
         ): PermissionCheckResult {
-            return if (isLessMarshmallow() || hasSelfPermissions(activity, permissions)) {
+            return if (isGranted(activity, permissions)) {
                 PermissionCheckResult.getGranted()
             } else {
-                if (shouldShowRationale && shouldShowRequestPermissionRationale(activity, permissions)) {
-                    PermissionCheckResult.getShowRationale()
-                } else {
-                    requestPermissions(activity, permissions, requestCode)
-                    PermissionCheckResult.getRequiredRequest()
-                }
+                doOnDenied(activity, permissions, requestCode, shouldShowRationale, shouldRequestAutomatically)
             }
         }
 
@@ -38,18 +33,18 @@ class PermissionUtils {
                 fragment: Fragment,
                 permissions: Array<out String>,
                 requestCode: Int,
-                shouldShowRationale: Boolean): PermissionCheckResult {
-            return if (isLessMarshmallow() || hasSelfPermissions(fragment.requireContext(), permissions)) {
+                shouldShowRationale: Boolean,
+                shouldRequestAutomatically: Boolean): PermissionCheckResult {
+            return if (isGranted(fragment, permissions)) {
                 PermissionCheckResult.getGranted()
             } else {
-                if (shouldShowRationale && shouldShowRequestPermissionRationale(fragment, permissions)) {
-                    PermissionCheckResult.getShowRationale()
-                } else {
-                    requestPermissions(fragment, permissions, requestCode)
-                    PermissionCheckResult.getRequiredRequest()
-                }
+                doOnDenied(fragment, permissions, requestCode, shouldShowRationale, shouldRequestAutomatically)
             }
         }
+
+        fun isGranted(activity: Activity, permissions: Array<out String>) = isGranted(activity as Context, permissions)
+
+        fun isGranted(fragment: Fragment, permissions: Array<out String>) = isGranted(fragment.requireContext(), permissions)
 
         fun requestPermissions(activity: Activity, permissions: Array<out String>, requestCode: Int) {
             ActivityCompat.requestPermissions(activity, permissions, requestCode)
@@ -91,6 +86,40 @@ class PermissionUtils {
             }
         }
 
+        private fun doOnDenied(
+                activity: Activity,
+                permissions: Array<out String>,
+                requestCode: Int,
+                shouldShowRationale: Boolean,
+                shouldRequestAutomatically: Boolean
+        ): PermissionCheckResult {
+            return if (shouldShowRationale && shouldShowRequestPermissionRationale(activity, permissions)) {
+                PermissionCheckResult.getShowRationale()
+            } else {
+                if (shouldRequestAutomatically) {
+                    requestPermissions(activity, permissions, requestCode)
+                }
+                PermissionCheckResult.getRequiredRequest()
+            }
+        }
+
+        private fun doOnDenied(
+                fragment: Fragment,
+                permissions: Array<out String>,
+                requestCode: Int,
+                shouldShowRationale: Boolean,
+                shouldRequestAutomatically: Boolean
+        ): PermissionCheckResult {
+            return if (shouldShowRationale && shouldShowRequestPermissionRationale(fragment, permissions)) {
+                PermissionCheckResult.getShowRationale()
+            } else {
+                if (shouldRequestAutomatically) {
+                    requestPermissions(fragment, permissions, requestCode)
+                }
+                PermissionCheckResult.getRequiredRequest()
+            }
+        }
+
         @VisibleForTesting
         fun verifyPermissionsResult(grantResults: IntArray): Boolean {
             return grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }
@@ -102,6 +131,10 @@ class PermissionUtils {
 
         private fun shouldShowRequestPermissionRationale(fragment: Fragment, permissions: Array<out String>): Boolean {
             return permissions.any { fragment.shouldShowRequestPermissionRationale(it) }
+        }
+
+        private fun isGranted(context: Context, permissions: Array<out String>): Boolean {
+            return isLessMarshmallow() || hasSelfPermissions(context, permissions)
         }
 
         private fun hasSelfPermissions(context: Context, permissions: Array<out String>): Boolean {
@@ -117,12 +150,14 @@ class PermissionUtils {
             }
         }
 
+        @VisibleForTesting
         @Throws(RuntimeException::class)
-        private fun checkSelfPermission(context: Context, permission: String): Int {
+        fun checkSelfPermission(context: Context, permission: String): Int {
             return PermissionChecker.checkSelfPermission(context, permission)
         }
 
-        private fun isLessMarshmallow(): Boolean {
+        @VisibleForTesting
+        fun isLessMarshmallow(): Boolean {
             return Build.VERSION.SDK_INT < Build.VERSION_CODES.M
         }
 
