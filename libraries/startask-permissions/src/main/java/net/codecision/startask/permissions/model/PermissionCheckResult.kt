@@ -18,6 +18,13 @@ class PermissionCheckResult private constructor(
         return this
     }
 
+    inline fun onRequiredRequest(action: () -> Unit): PermissionCheckResult {
+        if (result == REQUIRED_REQUEST_RESULT) {
+            action()
+        }
+        return this
+    }
+
     companion object {
 
         /** Result: The permission is granted. */
@@ -26,7 +33,8 @@ class PermissionCheckResult private constructor(
         /** Result: The permission is show rationale. */
         const val SHOW_RATIONALE_RESULT = 1
 
-        private const val REQUIRED_REQUEST_RESULT = -1
+        /** Result: The permission need request. */
+        const val REQUIRED_REQUEST_RESULT = 3
 
         fun getGranted() = PermissionCheckResult(GRANTED_RESULT)
 
