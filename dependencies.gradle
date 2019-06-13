@@ -10,7 +10,7 @@ ext {
     ]
 
     libsGroup = "com.github.illiashenkoo.startask"
-    libsVersion = "0.1.5"
+    libsVersion = "0.1.6"
 
     /*================================= BUILD PLUGINS ==================================*/
 
