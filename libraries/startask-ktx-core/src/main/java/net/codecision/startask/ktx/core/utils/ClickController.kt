@@ -2,7 +2,7 @@ package net.codecision.startask.ktx.core.utils
 
 object ClickController {
 
-    val customClickIntervalMs: Long? = null
+    var customClickIntervalMs: Long? = null
 
     private const val MIN_CLICK_INTERVAL_MS = 500L
 
