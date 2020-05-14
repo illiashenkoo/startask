@@ -37,6 +37,38 @@ abstract class StartaskAdapter<T, VH : RecyclerView.ViewHolder>(
         notifyDataSetChanged()
     }
 
+    fun removeItem(position: Int) {
+        var removedAt: Int? = null
+
+        synchronized(lockKey) {
+            if (position < items.size) {
+                items.removeAt(position)
+                removedAt = position
+            }
+        }
+
+        removedAt?.let { atPosition ->
+            notifyItemRemoved(atPosition)
+        }
+    }
+
+    fun removeItem(item: T) {
+        var removedAt: Int? = null
+
+        synchronized(lockKey) {
+            val position = items.indexOf(item)
+
+            if (position >= 0) {
+                items.removeAt(position)
+                removedAt = position
+            }
+        }
+
+        removedAt?.let { atPosition ->
+            notifyItemRemoved(atPosition)
+        }
+    }
+
     fun inflateView(@LayoutRes resource: Int, root: ViewGroup): View {
         return getLayoutInflater().inflate(resource, root, false)
     }
